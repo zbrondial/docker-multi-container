@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+  redis:
+    image: 'redis:latest'
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      -'3050:80'
+  api:
+    build:  
+      dockerfile: Dockerfile.dev
+      context: ./server   # to specify which directory to use and look for the Dockerfile.dev file
+    volumes:
+      - /app/node_modules  # leave this folder as is
+      - ./server:/app      # copy the contents from the local's server directory to container's /app folder
+    environment:           # working with environment variables inside the container
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGUSER=postres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app 
+
