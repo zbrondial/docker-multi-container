@@ -3,23 +3,23 @@ services:
   - docker
 
 before_install:
-  - docker build -t multi-cont-app -f ./client/Dockerfile.dev ./client
+  - docker build -t zeepeebee30/multi-cont-app -f ./client/Dockerfile.dev ./client
 
 script: 
-  - docker run -e CI=true multi-cont-app npm test
+  - docker run -e CI=true zeepeebee30/multi-cont-app npm test
 
 after_success:
-  - docker build -t multi-client ./client
-  - docker build -t multi-nginx ./nginx
-  - docker build -t multi-server ./server
+  - docker build -t zeepeebee30/multi-client ./client
+  - docker build -t zeepeebee30/multi-nginx ./nginx
+  - docker build -t zeepeebee30/zeepeebee30/multi-server ./server
   - docker build -t multi-worker ./worker
 # Login to the Docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 # Take those images and push them to docker hub
-  - docker push multi-client
-  - docker push multi-nginx
-  - docker push multi-server
-  - docker push multi-worker
+  - docker push zeepeebee30/multi-client
+  - docker push zeepeebee30/multi-nginx
+  - docker push zeepeebee30/multi-server
+  - docker push zeepeebee30/multi-worker
 
 # deploy:
 #   provider: elasticbeanstalk
